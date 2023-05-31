@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
         val item2 = Item("Sample Item 2", 45)
         val item3 = Item("Sample Item 3", 3)
 
-        //Initialise list
 
         //Insert items
         list.add(item1)
