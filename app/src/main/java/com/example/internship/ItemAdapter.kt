@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.internship.databinding.ItemLayoutBinding
 import java.util.LinkedList
 
-class ItemAdapter(var itemList: LinkedList<Item>): Adapter<ItemAdapter.HomeViewHolder>() {
+class ItemAdapter(var itemList: MyLinkedList<Item>): Adapter<ItemAdapter.HomeViewHolder>() {
 
 inner class HomeViewHolder(val binding: ItemLayoutBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -22,16 +22,16 @@ inner class HomeViewHolder(val binding: ItemLayoutBinding): RecyclerView.ViewHol
     }
 
     override fun getItemCount(): Int {
-        return itemList.size
+        return itemList.size()
     }
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
-        val currentItem = itemList[position]
-        holder.binding.name.text = currentItem.name
-        holder.binding.price.text = currentItem.price.toString()
+        val currentItem = itemList.get(position)
+        holder.binding.name.text = currentItem?.name
+        holder.binding.price.text = currentItem?.price.toString()
     }
 
-    fun updateData(data: LinkedList<Item>){
+    fun updateData(data: MyLinkedList<Item>){
         itemList=data
         notifyItemRangeChanged(0,itemCount)
     }
