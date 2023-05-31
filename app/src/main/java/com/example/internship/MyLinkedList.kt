@@ -22,6 +22,7 @@ class MyLinkedList<T> {
         count++
 
     }
+
     fun size(): Int {
         return count
     }
