@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val adapter by lazy { ItemAdapter(list) }
+    private val adapter by lazy { ItemAdapter(list, rvListener) }
     private var list: MyLinkedList<Item> = MyLinkedList()
     lateinit var database: ItemDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +36,14 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
 
         var count = 0
 
-        database.itemDao().getChart().observe(this) {
+        database.itemDao().getItem().observe(this) {
 
-            if (count==0) {
+            if (count == 0) {
                 for (item in it) {
                     list.add(item)
                 }
-            }
-            count++
-            list.add(it[it.size-1])
+                count++
+            } else list.add(it[it.size - 1])
             adapter.updateData(list)
         }
         binding.itemList.layoutManager = LinearLayoutManager(this)
@@ -60,9 +59,21 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
     override fun applyTexts(name: String, price: Int) {
         val item = Item(0, name, price)
         GlobalScope.launch(Dispatchers.IO) {
-            database.itemDao().insertChart(item)
+            database.itemDao().insertItem(item)
         }
 //        list.add(item)
         Toast.makeText(this, "Item Added", Toast.LENGTH_SHORT).show()
+    }
+
+    private val rvListener by lazy {
+        object : ItemRvListener {
+            override fun onItemClicked(item: Item?) {
+                GlobalScope.launch {
+                    database.itemDao().deleteItem(item)
+                }
+                Toast.makeText(applicationContext, item?.name, Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 }
