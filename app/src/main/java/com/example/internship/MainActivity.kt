@@ -6,8 +6,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import com.example.internship.RoomDatabase.Chart
 import com.example.internship.RoomDatabase.ChartDatabase
 import com.example.internship.databinding.ActivityMainBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.LinkedList
 
 class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
@@ -50,8 +54,12 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
         customDialogue.show(supportFragmentManager, "Custom Dialogue")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun applyTexts(name: String, price: Int) {
         val item = Item(name, price)
+        GlobalScope.launch {
+            database.chartDao().insertChart(Chart(0,item))
+        }
         list.add(item)
         Toast.makeText(this, "Item Added", Toast.LENGTH_SHORT).show()
     }
