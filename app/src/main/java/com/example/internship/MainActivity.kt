@@ -30,17 +30,19 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
 
 
         //Insert item from database
-        list.add(Item(0, "Ashu", 34))
-        list.add(Item(1, "Nashrah", 343))
+        list.add(Item(0, "Sample item 1", 34))
+        list.add(Item(1, "Sample item 2", 343))
 
-        database.itemDao().getChart().observe(this) {
-            for (item in it) {
+        val items = database.itemDao().getChart().value
+        if (items != null) {
+            for (item in items) {
                 list.add(item)
             }
+        }
             binding.itemList.adapter = adapter
             adapter.updateData(list)
             binding.itemList.layoutManager = LinearLayoutManager(this)
-        }
+
     }
 
     fun onClickAdd(view: View) {
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
         GlobalScope.launch {
             database.itemDao().insertChart(item)
         }
-        list.add(item)
+//        list.add(item)
         Toast.makeText(this, "Item Added", Toast.LENGTH_SHORT).show()
     }
 }
