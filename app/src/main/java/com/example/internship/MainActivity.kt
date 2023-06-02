@@ -9,6 +9,7 @@ import androidx.room.Room
 import com.example.internship.RoomDatabase.ItemDatabase
 import com.example.internship.databinding.ActivityMainBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -33,16 +34,21 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
         list.add(Item(0, "Sample item 1", 34))
         list.add(Item(1, "Sample item 2", 343))
 
-        val items = database.itemDao().getChart().value
-        if (items != null) {
-            for (item in items) {
-                list.add(item)
-            }
-        }
-            binding.itemList.adapter = adapter
-            adapter.updateData(list)
-            binding.itemList.layoutManager = LinearLayoutManager(this)
+        var count = 0
 
+        database.itemDao().getChart().observe(this) {
+
+            if (count==0) {
+                for (item in it) {
+                    list.add(item)
+                }
+            }
+            count++
+            list.add(it[it.size-1])
+            adapter.updateData(list)
+        }
+        binding.itemList.layoutManager = LinearLayoutManager(this)
+        binding.itemList.adapter = adapter
     }
 
     fun onClickAdd(view: View) {
@@ -53,7 +59,7 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
     @OptIn(DelicateCoroutinesApi::class)
     override fun applyTexts(name: String, price: Int) {
         val item = Item(0, name, price)
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             database.itemDao().insertChart(item)
         }
 //        list.add(item)
