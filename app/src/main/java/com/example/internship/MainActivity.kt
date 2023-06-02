@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
+import com.example.internship.RoomDatabase.ChartDatabase
 import com.example.internship.databinding.ActivityMainBinding
 import java.util.LinkedList
 
@@ -12,9 +14,19 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val adapter by lazy { ItemAdapter(list) }
     private var list: MyLinkedList<Item> = MyLinkedList()
+    lateinit var database: ChartDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        //Create database object
+        database = Room.databaseBuilder(
+            applicationContext,
+            ChartDatabase::class.java,
+            "chartDB"
+        ).build()
+
+
 
         // Create some sample items
         val item1 = Item("Sample Item 1", 0)
@@ -30,7 +42,7 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
 
         binding.itemList.adapter = adapter
         adapter.updateData(list)
-        binding.itemList.layoutManager =LinearLayoutManager(this)
+        binding.itemList.layoutManager = LinearLayoutManager(this)
     }
 
     fun onClickAdd(view: View) {
