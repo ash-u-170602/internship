@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity(), CustomDialogue.DialogListener {
         Toast.makeText(this, "Item Added", Toast.LENGTH_SHORT).show()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private val rvListener by lazy {
         object : ItemRvListener {
             override fun onItemClicked(item: Item?) {
