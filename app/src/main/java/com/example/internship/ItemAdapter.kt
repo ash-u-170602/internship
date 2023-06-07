@@ -24,6 +24,7 @@ class ItemAdapter(
         )
     }
 
+
     override fun getItemCount(): Int {
         return itemList.size()
     }
